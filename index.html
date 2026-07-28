@@ -1,165 +1,235 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STUDIO | TASARIM VİTRİNİ</title>
-  <!-- Supabase Kütüphanesi -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>SHOWCASE | COMMUNITY DESIGN PLATFORM</title>
+  
+  <!-- LÜKS VE MODERN TİPOGRAFİ FONTLARI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #ffffff;
-      --text: #000000;
+      --text: #050505;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Space Grotesk', -apple-system, sans-serif;
     }
 
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
     }
 
     body { 
       background-color: var(--bg); 
       color: var(--text); 
-      padding-bottom: 50px; 
+      padding-bottom: 80px; 
+      font-family: var(--font-sans);
       -webkit-font-smoothing: antialiased; 
     }
 
+    /* HEADER */
     header { 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      padding: 20px 40px; 
+      padding: 25px 50px; 
       border-bottom: 1px solid var(--text); 
-      background: var(--bg);
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100;
     }
     .logo { 
-      font-size: 24px; 
-      font-weight: bold; 
-      letter-spacing: 4px; 
+      font-family: var(--font-serif);
+      font-size: 28px; 
+      font-weight: 800; 
+      letter-spacing: 3px; 
     }
-
-    .header-actions {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .user-info {
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      opacity: 0.7;
-    }
-
     .btn-outline { 
       background: var(--bg); 
       color: var(--text); 
       border: 1px solid var(--text); 
-      padding: 10px 20px; 
-      font-size: 12px; 
-      font-weight: bold; 
+      padding: 12px 24px; 
+      font-family: var(--font-sans);
+      font-size: 11px; 
+      font-weight: 700; 
       letter-spacing: 2px; 
       text-transform: uppercase; 
       cursor: pointer; 
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     .btn-outline:hover { 
       background: var(--text); 
       color: var(--bg); 
     }
 
+    /* MAIN CONTAINER */
     .container { 
       max-width: 1200px; 
-      margin: 40px auto; 
-      padding: 0 20px; 
+      margin: 0 auto; 
+      padding: 0 30px; 
     }
 
+    /* HERO STATEMENT AREA */
+    .hero {
+      padding: 60px 0 40px 0;
+      border-bottom: 1px solid var(--text);
+      margin-bottom: 40px;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 15px;
+    }
+    .hero-title em {
+      font-style: italic;
+      font-weight: 300;
+    }
+    .hero-subtitle {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    /* NAVIGATION TABS */
     .nav-tabs { 
       display: flex; 
-      gap: 30px; 
-      margin-bottom: 40px; 
-      border-bottom: 1px solid var(--text); 
+      gap: 40px; 
+      margin-bottom: 50px; 
     }
     .tab-btn { 
       background: none; 
       border: none; 
-      padding-bottom: 10px; 
-      font-size: 14px; 
-      font-weight: bold; 
-      letter-spacing: 2px; 
+      padding-bottom: 12px; 
+      font-family: var(--font-sans);
+      font-size: 12px; 
+      font-weight: 700; 
+      letter-spacing: 3px; 
       color: var(--text); 
       cursor: pointer; 
-      opacity: 0.4;
+      opacity: 0.3;
       text-transform: uppercase;
+      transition: opacity 0.3s;
+      position: relative;
     }
     .tab-btn.active { 
       opacity: 1; 
-      border-bottom: 3px solid var(--text); 
+    }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--text);
     }
 
+    /* GRID: 2 COLUMNS ALWAYS */
     .grid { 
       display: grid; 
       grid-template-columns: 1fr 1fr; 
-      gap: 40px; 
+      gap: 50px; 
     }
 
+    /* CARD DESIGN */
     .card { 
       border: 1px solid var(--text); 
       display: flex; 
       flex-direction: column; 
+      background: #fff;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
     }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 12px 12px 0px var(--text);
+    }
+
+    .card-img-container {
+      overflow: hidden;
+      position: relative;
+      background-color: #f5f5f5;
+    }
+
+    .trending-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 6px 12px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
     .card-img { 
       width: 100%; 
-      aspect-ratio: 2 / 3; 
+      aspect-ratio: 2 / 3;
       object-fit: cover; 
       border-bottom: 1px solid var(--text);
-      filter: grayscale(100%); 
-      transition: filter 0.3s;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card:hover .card-img {
-      filter: grayscale(0%);
+      transform: scale(1.04);
     }
 
     .card-body { 
-      padding: 20px; 
+      padding: 25px; 
       display: flex; 
       flex-direction: column; 
       flex: 1; 
     }
     .card-title { 
-      font-size: 16px; 
-      font-weight: bold; 
-      text-transform: uppercase; 
-      letter-spacing: 1px; 
-      margin-bottom: 5px; 
+      font-family: var(--font-serif);
+      font-size: 20px; 
+      font-weight: 600; 
+      letter-spacing: 0.5px; 
+      margin-bottom: 6px; 
     }
     .card-designer { 
-      font-size: 12px; 
+      font-size: 11px; 
       text-transform: uppercase; 
-      letter-spacing: 1px; 
-      margin-bottom: 20px; 
-      opacity: 0.6;
+      letter-spacing: 2px; 
+      margin-bottom: 25px; 
+      opacity: 0.5;
+      font-weight: 600;
     }
 
     .card-footer { 
       margin-top: auto; 
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: center; 
       border-top: 1px solid var(--text); 
-      padding-top: 15px; 
+      padding-top: 20px; 
     }
     
     .actions { 
       display: flex; 
-      gap: 10px; 
+      gap: 12px; 
       width: 100%;
       justify-content: space-between;
     }
+    .actions .btn-outline {
+      flex: 1;
+      justify-content: center;
+    }
 
+    /* MODAL WINDOW */
     .modal { 
       display: none; 
       position: fixed; 
@@ -167,7 +237,7 @@
       left: 0; 
       width: 100%; 
       height: 100%; 
-      background: rgba(255, 255, 255, 0.95); 
+      background: rgba(255, 255, 255, 0.96); 
       justify-content: center; 
       align-items: center; 
       z-index: 999; 
@@ -175,50 +245,53 @@
     .modal-content { 
       background: var(--bg); 
       border: 2px solid var(--text); 
-      padding: 40px; 
-      width: 100%; 
-      max-width: 450px; 
+      padding: 50px; 
+      width: 90%; 
+      max-width: 500px; 
       position: relative; 
+      box-shadow: 20px 20px 0px var(--text);
     }
     .close-btn { 
       position: absolute; 
       top: 20px; 
-      right: 20px; 
-      font-size: 20px; 
+      right: 25px; 
+      font-size: 24px; 
       font-weight: bold; 
       cursor: pointer; 
       background: none;
       border: none;
+      font-family: var(--font-sans);
     }
     .form-label { 
       display: block; 
       font-size: 11px; 
-      font-weight: bold; 
-      letter-spacing: 1px; 
+      font-weight: 700; 
+      letter-spacing: 2px; 
       text-transform: uppercase; 
       margin-bottom: 8px; 
-      margin-top: 20px;
+      margin-top: 25px;
     }
     .form-input { 
       width: 100%; 
-      padding: 12px; 
+      padding: 14px; 
       border: 1px solid var(--text); 
-      font-size: 14px; 
+      font-family: var(--font-sans);
+      font-size: 13px; 
       background: var(--bg);
       color: var(--text);
       outline: none;
+      transition: all 0.2s;
     }
     .form-input:focus {
       background: var(--text);
       color: var(--bg);
     }
     .modal-title {
-      font-size: 20px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-family: var(--font-serif);
+      font-size: 28px;
+      letter-spacing: 1px;
       border-bottom: 2px solid var(--text);
-      padding-bottom: 10px;
-      margin-bottom: 20px;
+      padding-bottom: 15px;
     }
 
     .hidden { display: none !important; }
@@ -227,211 +300,121 @@
 <body>
 
   <header>
-    <div class="logo">STUDIO.</div>
-    <div class="header-actions">
-      <span id="userDisplay" class="user-info hidden"></span>
-      <button id="authBtn" class="btn-outline" onclick="openModal('authModal')">GİRİŞ YAP</button>
-      <button id="logoutBtn" class="btn-outline hidden" onclick="handleLogout()">ÇIKIŞ YAP</button>
-      <button class="btn-outline" onclick="checkAuthAndOpenUpload()">YENİ TASARIM EKLE</button>
-    </div>
+    <div class="logo">SHOWCASE.</div>
+    <button class="btn-outline" onclick="openModal('uploadModal')">
+      <span>+</span> ADD NEW DESIGN
+    </button>
   </header>
 
   <div class="container">
+    
+    <!-- HERO STATEMENT -->
+    <div class="hero">
+      <div class="hero-subtitle">CROWD-SOURCED CREATIVITY</div>
+      <h1 class="hero-title">Designed by community.<br><em>Produced by us.</em></h1>
+    </div>
+
+    <!-- TABS -->
     <div class="nav-tabs">
-      <button class="tab-btn active" id="tab-explore" onclick="switchTab('explore')">VITRIN</button>
-      <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">PROFILIM</button>
+      <button class="tab-btn active" id="tab-explore" onclick="switchTab('explore')">SHOWCASE</button>
+      <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">MY PROFILE</button>
     </div>
 
-    <!-- VİTRİN BÖLÜMÜ -->
+    <!-- SHOWCASE SECTION -->
     <div id="view-explore">
-      <div class="grid" id="exploreGrid">
-        <p style="text-align: center; grid-column: 1/-1;">YÜKLENİYOR...</p>
-      </div>
+      <div class="grid" id="exploreGrid"></div>
     </div>
 
-    <!-- PROFİL BÖLÜMÜ -->
+    <!-- PROFILE SECTION -->
     <div id="view-profile" class="hidden">
-      <div style="margin-bottom: 40px; border: 1px solid #000; padding: 30px;">
-        <h2 id="profileTitle" style="font-size: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">PROFILIM</h2>
-        <p style="font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">YUKLEDIGINIZ TASARIMLAR BURADA LISTELENIR</p>
+      <div style="margin-bottom: 50px; border: 1px solid #000; padding: 40px; background: #fafafa;">
+        <h2 style="font-family: var(--font-serif); font-size: 28px; margin-bottom: 8px;">@MY_STUDIO</h2>
+        <p style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6;">YOUR SUBMITTED DESIGNS AND VOTING STATS</p>
       </div>
       <div class="grid" id="profileGrid"></div>
     </div>
+
   </div>
 
-  <!-- GİRİŞ / KAYIT MODALI -->
-  <div class="modal" id="authModal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('authModal')">X</button>
-      <div class="modal-title" id="authModalTitle">GİRİŞ YAP</div>
-      
-      <label class="form-label">E-POSTA</label>
-      <input type="email" id="authEmail" class="form-input" placeholder="ornek@email.com">
-      
-      <label class="form-label">ŞİFRE</label>
-      <input type="password" id="authPassword" class="form-input" placeholder="******">
-      
-      <button class="btn-outline" id="authSubmitBtn" style="width: 100%; margin-top: 30px;" onclick="handleAuth()">GİRİŞ YAP</button>
-
-      <div style="margin-top: 20px; text-align: center;">
-        <button id="toggleAuthModeBtn" style="background:none; border:none; font-size: 11px; letter-spacing: 1px; cursor:pointer; text-decoration: underline;" onclick="toggleAuthMode()">Hesabın yok mu? Kayıt Ol</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- YÜKLEME MODALI -->
+  <!-- UPLOAD MODAL -->
   <div class="modal" id="uploadModal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('uploadModal')">X</button>
-      <div class="modal-title">TASARIM YUKLE</div>
+      <button class="close-btn" onclick="closeModal('uploadModal')">✕</button>
+      <div class="modal-title">Submit Design</div>
       
-      <label class="form-label">TASARIM BASLIGI</label>
-      <input type="text" id="inputTitle" class="form-input" placeholder="ORNEK: SIYAH CEKET">
+      <label class="form-label">DESIGN TITLE</label>
+      <input type="text" id="inputTitle" class="form-input" placeholder="E.G. OVERSIZED TRENCH COAT">
       
-      <label class="form-label">GORSEL LINKI (URL)</label>
+      <label class="form-label">IMAGE URL</label>
       <input type="text" id="inputImage" class="form-input" placeholder="HTTPS://...">
       
-      <button class="btn-outline" style="width: 100%; margin-top: 30px;" onclick="addDesign()">YAYINLA</button>
+      <button class="btn-outline" style="width: 100%; margin-top: 35px; justify-content: center;" onclick="addDesign()">PUBLISH TO SHOWCASE</button>
     </div>
   </div>
 
   <script>
-    // -----------------------------------------------------------
-    // SUPABASE BAGLANTISI (Bilgilerini tırnakların içine yaz)
-    // -----------------------------------------------------------
-    const SUPABASE_URL = "BURAYA_PROJECT_URL_YAZ";
-    const SUPABASE_KEY = "BURAYA_ANON_KEY_YAZ";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    let currentUser = null;
-    let authMode = 'login'; // 'login' veya 'signup'
-    let designs = [];
-
-    // Oturum Durumunu Kontrol Et
-    async function checkUserSession() {
-      const { data: { session } } = await db.auth.getSession();
-      updateUserUI(session?.user || null);
-
-      db.auth.onAuthStateChange((_event, session) => {
-        updateUserUI(session?.user || null);
-      });
-    }
-
-    function updateUserUI(user) {
-      currentUser = user;
-      const userDisplay = document.getElementById('userDisplay');
-      const authBtn = document.getElementById('authBtn');
-      const logoutBtn = document.getElementById('logoutBtn');
-      const profileTitle = document.getElementById('profileTitle');
-
-      if (user) {
-        userDisplay.textContent = user.email;
-        userDisplay.classList.remove('hidden');
-        authBtn.classList.add('hidden');
-        logoutBtn.classList.remove('hidden');
-        profileTitle.textContent = "@" + user.email.split('@')[0].toUpperCase();
-      } else {
-        userDisplay.classList.add('hidden');
-        authBtn.classList.remove('hidden');
-        logoutBtn.classList.add('hidden');
-        profileTitle.textContent = "PROFILIM (MISAFIR)";
+    let designs = [
+      { 
+        id: 1, 
+        title: "YELLOW CONCEPT COAT", 
+        designer: "AYNUR Y.", 
+        imageUrl: "https://picsum.photos/id/1027/600/900", 
+        likes: 342, 
+        isMine: false 
+      },
+      { 
+        id: 2, 
+        title: "COLORFUL LEATHER BAG", 
+        designer: "CANER D.", 
+        imageUrl: "https://picsum.photos/id/1062/600/900", 
+        likes: 189, 
+        isMine: false 
+      },
+      { 
+        id: 3, 
+        title: "URBAN STREETWEAR", 
+        designer: "ME", 
+        imageUrl: "https://picsum.photos/id/338/600/900", 
+        likes: 215, 
+        isMine: true 
+      },
+      { 
+        id: 4, 
+        title: "AVANT-GARDE DRESS", 
+        designer: "ELIF S.", 
+        imageUrl: "https://picsum.photos/id/64/600/900", 
+        likes: 310, 
+        isMine: false 
       }
-      fetchDesigns();
-    }
-
-    // Giriş / Kayıt İşlemleri
-    async function handleAuth() {
-      const email = document.getElementById('authEmail').value;
-      const password = document.getElementById('authPassword').value;
-
-      if (!email || !password) return alert("E-POSTA VE ŞİFRE ALANLARI BOŞ BIRAKILAMAZ.");
-
-      if (authMode === 'login') {
-        const { error } = await db.auth.signInWithPassword({ email, password });
-        if (error) alert("Giriş Hatası: " + error.message);
-        else closeModal('authModal');
-      } else {
-        const { error } = await db.auth.signUp({ email, password });
-        if (error) alert("Kayıt Hatası: " + error.message);
-        else {
-          alert("Kayıt başarılı! Giriş yapılıyor.");
-          closeModal('authModal');
-        }
-      }
-    }
-
-    async function handleLogout() {
-      await db.auth.signOut();
-      alert("Çıkış yapıldı.");
-    }
-
-    function toggleAuthMode() {
-      const title = document.getElementById('authModalTitle');
-      const submitBtn = document.getElementById('authSubmitBtn');
-      const toggleBtn = document.getElementById('toggleAuthModeBtn');
-
-      if (authMode === 'login') {
-        authMode = 'signup';
-        title.textContent = 'KAYIT OL';
-        submitBtn.textContent = 'KAYIT OL';
-        toggleBtn.textContent = 'Zaten hesabın var mı? Giriş Yap';
-      } else {
-        authMode = 'login';
-        title.textContent = 'GİRİŞ YAP';
-        submitBtn.textContent = 'GİRİŞ YAP';
-        toggleBtn.textContent = 'Hesabın yok mu? Kayıt Ol';
-      }
-    }
-
-    function checkAuthAndOpenUpload() {
-      if (!currentUser) {
-        alert("Tasarım yüklemek için önce giriş yapmalısınız.");
-        openModal('authModal');
-      } else {
-        openModal('uploadModal');
-      }
-    }
-
-    // Veritabanından Tasarımları Çekme
-    async function fetchDesigns() {
-      const { data, error } = await db.from('designs').select('*').order('likes', { ascending: false });
-      if (error) return console.error(error);
-
-      designs = data || [];
-      renderDesigns();
-    }
+    ];
 
     function renderDesigns() {
       const exploreGrid = document.getElementById('exploreGrid');
       const profileGrid = document.getElementById('profileGrid');
 
-      if (designs.length === 0) {
-        exploreGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center;">HENÜZ TASARIM EKLENMEDİ.</p>`;
-        profileGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center;">HENÜZ TASARIM EKLENMEDİ.</p>`;
-        return;
-      }
+      let sorted = [...designs].sort((a, b) => b.likes - a.likes);
+      exploreGrid.innerHTML = sorted.map((d, index) => createCardHtml(d, false, index === 0)).join('');
 
-      exploreGrid.innerHTML = designs.map(d => createCardHtml(d)).join('');
-      
-      const myDesigns = currentUser ? designs.filter(d => d.designer === currentUser.email) : [];
-      profileGrid.innerHTML = myDesigns.length > 0 
-        ? myDesigns.map(d => createCardHtml(d, true)).join('')
-        : `<p style="grid-column: 1/-1; text-align: center;">YÜKLEDİĞİNİZ TASARIM BULUNMUYOR.</p>`;
+      const myDesigns = designs.filter(d => d.isMine);
+      profileGrid.innerHTML = myDesigns.map(d => createCardHtml(d, true)).join('');
     }
 
-    function createCardHtml(d, isProfile = false) {
+    function createCardHtml(d, isProfile = false, isTop = false) {
       return `
         <div class="card">
-          <img class="card-img" src="${d.image_url}" alt="${d.title}">
+          <div class="card-img-container">
+            ${isTop && !isProfile ? '<div class="trending-badge">★ NO.1 TRENDING</div>' : ''}
+            <img class="card-img" src="${d.imageUrl}" alt="${d.title}">
+          </div>
           <div class="card-body">
             <div class="card-title">${d.title}</div>
-            <div class="card-designer">TASARIMCI: ${d.designer || 'ANONİM'}</div>
+            <div class="card-designer">BY ${d.designer}</div>
             <div class="card-footer">
               <div class="actions">
-                <button class="btn-outline" onclick="likeDesign(${d.id}, ${d.likes})">ADD FAVORITE (${d.likes})</button>
+                <button class="btn-outline" onclick="likeDesign(${d.id})">♥ FAVORITE (${d.likes})</button>
                 ${isProfile 
-                  ? `<button class="btn-outline" onclick="deleteDesign(${d.id})">SIL</button>` 
-                  : `<button class="btn-outline" onclick="buyDesign('${d.title}')">BUY</button>`
+                  ? `<button class="btn-outline" onclick="deleteDesign(${d.id})">DELETE</button>` 
+                  : `<button class="btn-outline" onclick="buyDesign('${d.title}')">BUY →</button>`
                 }
               </div>
             </div>
@@ -440,48 +423,42 @@
       `;
     }
 
-    async function likeDesign(id, currentLikes) {
-      const { error } = await db.from('designs').update({ likes: currentLikes + 1 }).eq('id', id);
-      if (!error) fetchDesigns();
-    }
-
-    async function addDesign() {
-      if (!currentUser) return alert("Lütfen giriş yapın.");
-
-      const title = document.getElementById('inputTitle').value;
-      const imageUrl = document.getElementById('inputImage').value || "https://images.unsplash.com/photo-1550614000-4b95d4edfa22?w=600&q=80";
-
-      if (!title) return alert("BASLIK ALANI ZORUNLUDUR.");
-
-      const { error } = await db.from('designs').insert([
-        { 
-          title: title.toUpperCase(), 
-          designer: currentUser.email, 
-          image_url: imageUrl, 
-          likes: 0, 
-          is_mine: true 
-        }
-      ]);
-
-      if (error) {
-        alert("Hata: " + error.message);
-      } else {
-        closeModal('uploadModal');
-        document.getElementById('inputTitle').value = '';
-        document.getElementById('inputImage').value = '';
-        fetchDesigns();
+    function likeDesign(id) {
+      const design = designs.find(d => d.id === id);
+      if (design) {
+        design.likes++;
+        renderDesigns();
       }
     }
 
-    async function deleteDesign(id) {
-      if (confirm("BU TASARIMI SILMEK ISTIYOR MUSUNUZ?")) {
-        const { error } = await db.from('designs').delete().eq('id', id);
-        if (!error) fetchDesigns();
+    function addDesign() {
+      const title = document.getElementById('inputTitle').value;
+      const imageUrl = document.getElementById('inputImage').value || "https://picsum.photos/id/1025/600/900";
+
+      if (!title) return alert("PLEASE ENTER A TITLE.");
+
+      designs.push({
+        id: Date.now(),
+        title: title.toUpperCase(),
+        designer: "ME",
+        imageUrl: imageUrl,
+        likes: 0,
+        isMine: true
+      });
+
+      closeModal('uploadModal');
+      renderDesigns();
+    }
+
+    function deleteDesign(id) {
+      if (confirm("DELETE THIS DESIGN FROM YOUR SHOWCASE?")) {
+        designs = designs.filter(d => d.id !== id);
+        renderDesigns();
       }
     }
 
     function buyDesign(title) {
-      alert("[" + title + "] SATIN ALMA / LISANSLAMA TALEBI ALINDI.");
+      alert("PURCHASE INQUIRY SENT FOR [" + title + "]");
     }
 
     function switchTab(tab) {
@@ -502,7 +479,7 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    checkUserSession();
+    renderDesigns();
   </script>
 </body>
 </html>
