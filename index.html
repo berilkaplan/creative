@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SHOWCASE | COMMUNITY DESIGN PLATFORM</title>
   
+  <!-- SUPABASE JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- LÜKS VE MODERN TİPOGRAFİ FONTLARI -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+ 
   <style>
     :root {
       --bg: #ffffff;
@@ -17,13 +20,13 @@
       --font-serif: 'Playfair Display', Georgia, serif;
       --font-sans: 'Space Grotesk', -apple-system, sans-serif;
     }
-
+ 
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
     }
-
+ 
     body { 
       background-color: var(--bg); 
       color: var(--text); 
@@ -31,7 +34,7 @@
       font-family: var(--font-sans);
       -webkit-font-smoothing: antialiased; 
     }
-
+ 
     /* HEADER */
     header { 
       display: flex; 
@@ -51,8 +54,20 @@
       font-weight: 800; 
       letter-spacing: 3px; 
     }
+    .header-actions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .user-info {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
     .btn-outline { 
-      background: var(--bg); 
+      background: var(--bg);
       color: var(--text); 
       border: 1px solid var(--text); 
       padding: 12px 24px; 
@@ -71,14 +86,14 @@
       background: var(--text); 
       color: var(--bg); 
     }
-
+ 
     /* MAIN CONTAINER */
     .container { 
       max-width: 1200px; 
       margin: 0 auto; 
       padding: 0 30px; 
     }
-
+ 
     /* HERO STATEMENT AREA */
     .hero {
       padding: 60px 0 40px 0;
@@ -103,7 +118,7 @@
       text-transform: uppercase;
       opacity: 0.6;
     }
-
+ 
     /* NAVIGATION TABS */
     .nav-tabs { 
       display: flex; 
@@ -137,14 +152,14 @@
       height: 2px;
       background: var(--text);
     }
-
+ 
     /* GRID: 2 COLUMNS ALWAYS */
     .grid { 
       display: grid; 
       grid-template-columns: 1fr 1fr; 
       gap: 50px; 
     }
-
+ 
     /* CARD DESIGN */
     .card { 
       border: 1px solid var(--text); 
@@ -157,13 +172,13 @@
       transform: translateY(-4px);
       box-shadow: 12px 12px 0px var(--text);
     }
-
+ 
     .card-img-container {
       overflow: hidden;
       position: relative;
       background-color: #f5f5f5;
     }
-
+ 
     .trending-badge {
       position: absolute;
       top: 15px;
@@ -177,7 +192,7 @@
       text-transform: uppercase;
       z-index: 2;
     }
-
+ 
     .card-img { 
       width: 100%; 
       aspect-ratio: 2 / 3;
@@ -189,7 +204,7 @@
     .card:hover .card-img {
       transform: scale(1.04);
     }
-
+ 
     .card-body { 
       padding: 25px; 
       display: flex; 
@@ -200,7 +215,7 @@
       font-family: var(--font-serif);
       font-size: 20px; 
       font-weight: 600; 
-      letter-spacing: 0.5px; 
+      letter-spacing: 0.5px;
       margin-bottom: 6px; 
     }
     .card-designer { 
@@ -211,7 +226,7 @@
       opacity: 0.5;
       font-weight: 600;
     }
-
+ 
     .card-footer { 
       margin-top: auto; 
       border-top: 1px solid var(--text); 
@@ -228,7 +243,7 @@
       flex: 1;
       justify-content: center;
     }
-
+ 
     /* MODAL WINDOW */
     .modal { 
       display: none; 
@@ -243,7 +258,7 @@
       z-index: 999; 
     }
     .modal-content { 
-      background: var(--bg); 
+      background: var(--bg);
       border: 2px solid var(--text); 
       padding: 50px; 
       width: 90%; 
@@ -293,19 +308,24 @@
       border-bottom: 2px solid var(--text);
       padding-bottom: 15px;
     }
-
+ 
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-
+ 
   <header>
     <div class="logo">SHOWCASE.</div>
-    <button class="btn-outline" onclick="openModal('uploadModal')">
-      <span>+</span> ADD NEW DESIGN
-    </button>
+    <div class="header-actions">
+      <span id="userDisplay" class="user-info hidden"></span>
+      <button id="authBtn" class="btn-outline" onclick="openModal('authModal')">SIGN IN</button>
+      <button id="logoutBtn" class="btn-outline hidden" onclick="handleLogout()">LOGOUT</button>
+      <button class="btn-outline" onclick="checkAuthAndOpenUpload()">
+        <span>+</span> ADD NEW DESIGN
+      </button>
+    </div>
   </header>
-
+ 
   <div class="container">
     
     <!-- HERO STATEMENT -->
@@ -313,27 +333,49 @@
       <div class="hero-subtitle">CROWD-SOURCED CREATIVITY</div>
       <h1 class="hero-title">Designed by community.<br><em>Produced by us.</em></h1>
     </div>
-
+ 
     <!-- TABS -->
     <div class="nav-tabs">
       <button class="tab-btn active" id="tab-explore" onclick="switchTab('explore')">SHOWCASE</button>
       <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">MY PROFILE</button>
     </div>
-
+ 
     <!-- SHOWCASE SECTION -->
     <div id="view-explore">
-      <div class="grid" id="exploreGrid"></div>
+      <div class="grid" id="exploreGrid">
+        <p style="text-align: center; grid-column: 1/-1;">LOADING DESIGNS...</p>
+      </div>
     </div>
-
+ 
     <!-- PROFILE SECTION -->
     <div id="view-profile" class="hidden">
       <div style="margin-bottom: 50px; border: 1px solid #000; padding: 40px; background: #fafafa;">
-        <h2 style="font-family: var(--font-serif); font-size: 28px; margin-bottom: 8px;">@MY_STUDIO</h2>
+        <h2 id="profileTitle" style="font-family: var(--font-serif); font-size: 28px; margin-bottom: 8px;">@MY_STUDIO</h2>
         <p style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6;">YOUR SUBMITTED DESIGNS AND VOTING STATS</p>
       </div>
       <div class="grid" id="profileGrid"></div>
     </div>
+ 
+  </div>
+ 
+  <!-- AUTH MODAL -->
+  <div class="modal" id="authModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('authModal')">✕</button>
+      <div class="modal-title" id="authModalTitle">SIGN IN</div>
+      
+      <label class="form-label">EMAIL</label>
+      <input type="email" id="authEmail" class="form-input" placeholder="user@example.com">
+      
+      <label class="form-label">PASSWORD</label>
+      <input type="password" id="authPassword" class="form-input" placeholder="******">
+      
+      <button class="btn-outline" id="authSubmitBtn" style="width: 100%; margin-top: 35px; justify-content: center;" onclick="handleAuth()">SIGN IN</button>
 
+      <div style="margin-top: 20px; text-align: center;">
+        <button id="toggleAuthModeBtn" style="background:none; border:none; font-size: 11px; letter-spacing: 1px; cursor:pointer; text-decoration: underline; font-family: var(--font-sans);" onclick="toggleAuthMode()">Don't have an account? Sign Up</button>
+      </div>
+    </div>
   </div>
 
   <!-- UPLOAD MODAL -->
@@ -351,67 +393,146 @@
       <button class="btn-outline" style="width: 100%; margin-top: 35px; justify-content: center;" onclick="addDesign()">PUBLISH TO SHOWCASE</button>
     </div>
   </div>
-
+ 
   <script>
-    let designs = [
-      { 
-        id: 1, 
-        title: "YELLOW CONCEPT COAT", 
-        designer: "AYNUR Y.", 
-        imageUrl: "https://picsum.photos/id/1027/600/900", 
-        likes: 342, 
-        isMine: false 
-      },
-      { 
-        id: 2, 
-        title: "COLORFUL LEATHER BAG", 
-        designer: "CANER D.", 
-        imageUrl: "https://picsum.photos/id/1062/600/900", 
-        likes: 189, 
-        isMine: false 
-      },
-      { 
-        id: 3, 
-        title: "URBAN STREETWEAR", 
-        designer: "ME", 
-        imageUrl: "https://picsum.photos/id/338/600/900", 
-        likes: 215, 
-        isMine: true 
-      },
-      { 
-        id: 4, 
-        title: "AVANT-GARDE DRESS", 
-        designer: "ELIF S.", 
-        imageUrl: "https://picsum.photos/id/64/600/900", 
-        likes: 310, 
-        isMine: false 
-      }
-    ];
+    // -----------------------------------------------------------
+    // SUPABASE SETUP (BURAYA KENDİ BİLGİLERİNİ YAZ)
+    // -----------------------------------------------------------
+    const SUPABASE_URL = "fkeygwgfxgxuhojjdrtj";
+    const SUPABASE_KEY = "eu-central-1";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let currentUser = null;
+    let authMode = 'login';
+    let designs = [];
+
+    // Session Control
+    async function checkUserSession() {
+      const { data: { session } } = await db.auth.getSession();
+      updateUserUI(session?.user || null);
+
+      db.auth.onAuthStateChange((_event, session) => {
+        updateUserUI(session?.user || null);
+      });
+    }
+
+    function updateUserUI(user) {
+      currentUser = user;
+      const userDisplay = document.getElementById('userDisplay');
+      const authBtn = document.getElementById('authBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const profileTitle = document.getElementById('profileTitle');
+
+      if (user) {
+        userDisplay.textContent = user.email;
+        userDisplay.classList.remove('hidden');
+        authBtn.classList.add('hidden');
+        logoutBtn.classList.remove('hidden');
+        profileTitle.textContent = "@" + user.email.split('@')[0].toUpperCase();
+      } else {
+        userDisplay.classList.add('hidden');
+        authBtn.classList.remove('hidden');
+        logoutBtn.classList.add('hidden');
+        profileTitle.textContent = "@MY_STUDIO (GUEST)";
+      }
+      fetchDesigns();
+    }
+
+    // Auth Handlers
+    async function handleAuth() {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+
+      if (!email || !password) return alert("EMAIL AND PASSWORD ARE REQUIRED.");
+
+      if (authMode === 'login') {
+        const { error } = await db.auth.signInWithPassword({ email, password });
+        if (error) alert("Sign in error: " + error.message);
+        else closeModal('authModal');
+      } else {
+        const { error } = await db.auth.signUp({ email, password });
+        if (error) alert("Sign up error: " + error.message);
+        else {
+          alert("Account created successfully! You can now sign in.");
+          closeModal('authModal');
+        }
+      }
+    }
+
+    async function handleLogout() {
+      await db.auth.signOut();
+      alert("Logged out successfully.");
+    }
+
+    function toggleAuthMode() {
+      const title = document.getElementById('authModalTitle');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const toggleBtn = document.getElementById('toggleAuthModeBtn');
+
+      if (authMode === 'login') {
+        authMode = 'signup';
+        title.textContent = 'SIGN UP';
+        submitBtn.textContent = 'SIGN UP';
+        toggleBtn.textContent = 'Already have an account? Sign In';
+      } else {
+        authMode = 'login';
+        title.textContent = 'SIGN IN';
+        submitBtn.textContent = 'SIGN IN';
+        toggleBtn.textContent = "Don't have an account? Sign Up";
+      }
+    }
+
+    function checkAuthAndOpenUpload() {
+      if (!currentUser) {
+        alert("Please sign in to add a new design.");
+        openModal('authModal');
+      } else {
+        openModal('uploadModal');
+      }
+    }
+
+    // Fetch Designs from Supabase
+    async function fetchDesigns() {
+      const { data, error } = await db.from('designs').select('*').order('likes', { ascending: false });
+      if (error) {
+        console.error(error);
+        return;
+      }
+      designs = data || [];
+      renderDesigns();
+    }
+ 
     function renderDesigns() {
       const exploreGrid = document.getElementById('exploreGrid');
       const profileGrid = document.getElementById('profileGrid');
+ 
+      if (designs.length === 0) {
+        exploreGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center;">NO DESIGNS ADDED YET.</p>`;
+        profileGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center;">NO DESIGNS ADDED YET.</p>`;
+        return;
+      }
 
-      let sorted = [...designs].sort((a, b) => b.likes - a.likes);
-      exploreGrid.innerHTML = sorted.map((d, index) => createCardHtml(d, false, index === 0)).join('');
-
-      const myDesigns = designs.filter(d => d.isMine);
-      profileGrid.innerHTML = myDesigns.map(d => createCardHtml(d, true)).join('');
+      exploreGrid.innerHTML = designs.map((d, index) => createCardHtml(d, false, index === 0)).join('');
+      
+      const myDesigns = currentUser ? designs.filter(d => d.designer === currentUser.email) : [];
+      profileGrid.innerHTML = myDesigns.length > 0 
+        ? myDesigns.map(d => createCardHtml(d, true)).join('')
+        : `<p style="grid-column: 1/-1; text-align: center;">YOU HAVE NOT UPLOADED ANY DESIGNS YET.</p>`;
     }
-
+ 
     function createCardHtml(d, isProfile = false, isTop = false) {
       return `
         <div class="card">
           <div class="card-img-container">
             ${isTop && !isProfile ? '<div class="trending-badge">★ NO.1 TRENDING</div>' : ''}
-            <img class="card-img" src="${d.imageUrl}" alt="${d.title}">
+            <img class="card-img" src="${d.image_url}" alt="${d.title}">
           </div>
           <div class="card-body">
             <div class="card-title">${d.title}</div>
-            <div class="card-designer">BY ${d.designer}</div>
+            <div class="card-designer">BY ${d.designer ? d.designer.split('@')[0].toUpperCase() : 'ANONYMOUS'}</div>
             <div class="card-footer">
               <div class="actions">
-                <button class="btn-outline" onclick="likeDesign(${d.id})">♥ FAVORITE (${d.likes})</button>
+                <button class="btn-outline" onclick="likeDesign(${d.id}, ${d.likes})">♥ FAVORITE (${d.likes})</button>
                 ${isProfile 
                   ? `<button class="btn-outline" onclick="deleteDesign(${d.id})">DELETE</button>` 
                   : `<button class="btn-outline" onclick="buyDesign('${d.title}')">BUY →</button>`
@@ -422,51 +543,56 @@
         </div>
       `;
     }
-
-    function likeDesign(id) {
-      const design = designs.find(d => d.id === id);
-      if (design) {
-        design.likes++;
-        renderDesigns();
-      }
+ 
+    async function likeDesign(id, currentLikes) {
+      const { error } = await db.from('designs').update({ likes: currentLikes + 1 }).eq('id', id);
+      if (!error) fetchDesigns();
     }
+ 
+    async function addDesign() {
+      if (!currentUser) return alert("Please sign in first.");
 
-    function addDesign() {
       const title = document.getElementById('inputTitle').value;
       const imageUrl = document.getElementById('inputImage').value || "https://picsum.photos/id/1025/600/900";
-
+ 
       if (!title) return alert("PLEASE ENTER A TITLE.");
+ 
+      const { error } = await db.from('designs').insert([
+        { 
+          title: title.toUpperCase(), 
+          designer: currentUser.email, 
+          image_url: imageUrl, 
+          likes: 0 
+        }
+      ]);
 
-      designs.push({
-        id: Date.now(),
-        title: title.toUpperCase(),
-        designer: "ME",
-        imageUrl: imageUrl,
-        likes: 0,
-        isMine: true
-      });
-
-      closeModal('uploadModal');
-      renderDesigns();
-    }
-
-    function deleteDesign(id) {
-      if (confirm("DELETE THIS DESIGN FROM YOUR SHOWCASE?")) {
-        designs = designs.filter(d => d.id !== id);
-        renderDesigns();
+      if (error) {
+        alert("Error: " + error.message);
+      } else {
+        closeModal('uploadModal');
+        document.getElementById('inputTitle').value = '';
+        document.getElementById('inputImage').value = '';
+        fetchDesigns();
       }
     }
-
+ 
+    async function deleteDesign(id) {
+      if (confirm("DELETE THIS DESIGN FROM YOUR SHOWCASE?")) {
+        const { error } = await db.from('designs').delete().eq('id', id);
+        if (!error) fetchDesigns();
+      }
+    }
+ 
     function buyDesign(title) {
       alert("PURCHASE INQUIRY SENT FOR [" + title + "]");
     }
-
+ 
     function switchTab(tab) {
       document.getElementById('view-explore').classList.add('hidden');
       document.getElementById('view-profile').classList.add('hidden');
       document.getElementById('tab-explore').classList.remove('active');
       document.getElementById('tab-profile').classList.remove('active');
-
+ 
       if (tab === 'explore') {
         document.getElementById('view-explore').classList.remove('hidden');
         document.getElementById('tab-explore').classList.add('active');
@@ -475,12 +601,12 @@
         document.getElementById('tab-profile').classList.add('active');
       }
     }
-
+ 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    renderDesigns();
+ 
+    // Initialize session and load data
+    checkUserSession();
   </script>
 </body>
 </html>
-
