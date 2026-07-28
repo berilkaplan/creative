@@ -271,7 +271,7 @@
       <label class="form-label">ŞİFRE</label>
       <input type="password" id="authPassword" class="form-input" placeholder="******">
       
-      <button class="btn-outline" id="authSubmitBtn" style="width: 100%; margin-top: 30px;" onclick="handleAuth('login')">GİRİŞ YAP</button>
+      <button class="btn-outline" id="authSubmitBtn" style="width: 100%; margin-top: 30px;" onclick="handleAuth()">GİRİŞ YAP</button>
 
       <div style="margin-top: 20px; text-align: center;">
         <button id="toggleAuthModeBtn" style="background:none; border:none; font-size: 11px; letter-spacing: 1px; cursor:pointer; text-decoration: underline;" onclick="toggleAuthMode()">Hesabın yok mu? Kayıt Ol</button>
@@ -297,7 +297,7 @@
 
   <script>
     // -----------------------------------------------------------
-    // SUPABASE BAGLANTISI
+    // SUPABASE BAGLANTISI (Bilgilerini tırnakların içine yaz)
     // -----------------------------------------------------------
     const SUPABASE_URL = "BURAYA_PROJECT_URL_YAZ";
     const SUPABASE_KEY = "BURAYA_ANON_KEY_YAZ";
@@ -312,7 +312,6 @@
       const { data: { session } } = await db.auth.getSession();
       updateUserUI(session?.user || null);
 
-      // Oturum değişikliklerini dinle
       db.auth.onAuthStateChange((_event, session) => {
         updateUserUI(session?.user || null);
       });
@@ -398,7 +397,7 @@
       const { data, error } = await db.from('designs').select('*').order('likes', { ascending: false });
       if (error) return console.error(error);
 
-      designs = data;
+      designs = data || [];
       renderDesigns();
     }
 
@@ -414,7 +413,6 @@
 
       exploreGrid.innerHTML = designs.map(d => createCardHtml(d)).join('');
       
-      // Giriş yapan kullanıcının kendi tasarımlarını filtrele
       const myDesigns = currentUser ? designs.filter(d => d.designer === currentUser.email) : [];
       profileGrid.innerHTML = myDesigns.length > 0 
         ? myDesigns.map(d => createCardHtml(d, true)).join('')
@@ -504,7 +502,6 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Sayfa Açıldığında Başlat
     checkUserSession();
   </script>
 </body>
